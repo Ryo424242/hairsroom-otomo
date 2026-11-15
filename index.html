@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hair's Room 大友</title>
+<meta name="description" content="いわき市平沼ノ内の理容室 Hair's Room 大友。営業日カレンダー、営業時間、料金、アクセス。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,600&family=Zen+Old+Mincho:wght@600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* 床屋のサインポール（赤・青・白）と外壁のレンガ色を軸にした、縦一列のシンプルな1ページ構成 */
+:root{
+  --ink:#1d2433;        /* 本文・見出し（濃紺） */
+  --paper:#f7f6f3;      /* 背景 */
+  --card:#ffffff;
+  --muted:#5f6675;
+  --line:#dcdad4;
+  --red:#c0272d;        /* サインポールの赤：休業日 */
+  --blue:#1f4f9c;       /* サインポールの青：アクセント */
+  --brick:#8a6d68;      /* 外壁のレンガ色 */
+  --display-en:"Playfair Display", Georgia, serif;
+  --display-ja:"Zen Old Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  --body:"Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", Meiryo, sans-serif;
+  color-scheme: light;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);line-height:1.8;font-size:16px}
+img{max-width:100%;display:block}
+a{color:var(--blue)}
+a:focus-visible,button:focus-visible{outline:3px solid var(--blue);outline-offset:2px;border-radius:4px}
+
+.pole{height:8px;background:repeating-linear-gradient(-45deg,var(--red) 0 14px,#fff 14px 22px,var(--blue) 22px 36px,#fff 36px 44px)}
+.wrap{max-width:880px;margin:0 auto;padding:0 20px}
+
+.draft{background:#fff4d6;color:#6b4e00;font-size:13px;text-align:center;padding:6px 16px}
+
+header.site{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:18px 0}
+.logo{display:flex;align-items:baseline;gap:10px;text-decoration:none;color:var(--ink)}
+.logo .en{font-family:var(--display-en);font-style:italic;font-size:26px}
+.logo .ja{font-family:var(--display-ja);font-size:28px;font-weight:700}
+header nav{display:flex;gap:18px;flex-wrap:wrap;font-size:14px}
+header nav a{color:var(--muted);text-decoration:none}
+header nav a:hover{color:var(--ink)}
+
+.hero{position:relative;border-radius:6px;overflow:hidden}
+.hero img{width:100%;aspect-ratio:16/8;object-fit:cover}
+.today{position:absolute;left:16px;bottom:16px;right:16px;max-width:420px;background:rgba(255,255,255,.95);border-radius:6px;padding:14px 18px;box-shadow:0 4px 18px rgba(0,0,0,.15)}
+.today .date{font-size:13px;color:var(--muted)}
+.today .status{font-size:22px;font-weight:700;display:flex;align-items:center;gap:10px}
+.today .status .dot{width:12px;height:12px;border-radius:50%;background:var(--blue);flex:none}
+.today.closed .status .dot{background:var(--red)}
+.today .hours{font-size:14px}
+
+section{padding:56px 0 8px}
+h2{font-family:var(--display-ja);font-size:26px;margin:0 0 4px;text-wrap:balance}
+.sub{font-family:var(--display-en);font-style:italic;color:var(--brick);font-size:15px;margin:0 0 22px}
+
+/* カレンダー */
+.cal-box{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:20px}
+.cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.cal-head h3{margin:0;font-size:20px;font-variant-numeric:tabular-nums}
+.cal-head button{font:inherit;font-size:14px;background:none;border:1px solid var(--line);border-radius:4px;padding:4px 12px;cursor:pointer;color:var(--ink)}
+.cal-head button:hover:not(:disabled){border-color:var(--ink)}
+.cal-head button:disabled{opacity:.35;cursor:default}
+table.cal{width:100%;border-collapse:collapse;table-layout:fixed;font-variant-numeric:tabular-nums}
+table.cal th{font-size:13px;font-weight:500;color:var(--muted);padding:6px 0}
+table.cal th.sun{color:var(--red)} table.cal th.sat{color:var(--blue)}
+table.cal td{text-align:center;padding:3px}
+table.cal td span{display:flex;flex-direction:column;align-items:center;justify-content:center;height:52px;border-radius:4px;font-size:17px;line-height:1.2}
+table.cal td.off span{background:var(--red);color:#fff;font-weight:700}
+table.cal td.off span small{font-size:10px;font-weight:500}
+table.cal td.past span{opacity:.35}
+table.cal td.today span{outline:2px solid var(--ink);outline-offset:-2px}
+.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin-top:12px}
+.legend i{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:-2px;margin-right:6px}
+.rule{margin-top:14px;font-size:15px}
+.rule strong{color:var(--red)}
+
+/* 営業案内・料金 */
+.info{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:20px 22px}
+.panel h3{margin:0 0 10px;font-size:17px}
+dl.rows{margin:0;display:grid;grid-template-columns:auto 1fr;gap:6px 18px}
+dl.rows dt{color:var(--muted)} dl.rows dd{margin:0}
+ul.menu{list-style:none;margin:0;padding:0}
+ul.menu li{display:flex;align-items:baseline;gap:8px;padding:6px 0;border-bottom:1px dashed var(--line)}
+ul.menu li:last-child{border-bottom:0}
+ul.menu .name{flex:none}
+ul.menu .fill{flex:1}
+ul.menu .price{font-variant-numeric:tabular-nums;font-weight:700}
+ul.menu .note{display:block;font-size:12px;color:var(--muted)}
+
+/* ごあいさつ */
+.greet{display:grid;grid-template-columns:260px 1fr;gap:32px;align-items:start}
+.greet img{border-radius:6px;aspect-ratio:3/4;object-fit:cover;width:100%}
+.greet p{margin:0 0 1em;max-width:34em}
+.sign{font-family:var(--display-ja);font-size:18px;text-align:right;max-width:34em}
+
+.photo-wide{border-radius:6px;overflow:hidden;margin-top:24px}
+.photo-wide img{width:100%;aspect-ratio:16/7;object-fit:cover}
+
+.btn{display:inline-block;background:var(--ink);color:#fff;text-decoration:none;border-radius:4px;padding:10px 18px;font-size:14px;margin-top:12px}
+.btn:hover{background:var(--blue)}
+
+footer{margin-top:64px;padding:24px 0 32px;font-size:13px;color:var(--muted);text-align:center}
+
+@media (max-width:640px){
+  .info,.greet{grid-template-columns:1fr}
+  .greet img{max-width:260px}
+  .hero img{aspect-ratio:4/3}
+  .today{position:static;max-width:none;border-radius:0;box-shadow:none;border:1px solid var(--line);border-top:0}
+  table.cal td span{height:44px;font-size:15px}
+  .logo .en{font-size:22px} .logo .ja{font-size:24px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="pole" aria-hidden="true"></div>
+<div class="draft">試作版です。営業時間・定休日・料金は仮の内容です。</div>
+
+<div class="wrap">
+  <header class="site">
+    <a class="logo" href="#top" aria-label="Hair's Room 大友 トップ"><span class="en">Hair's Room</span><span class="ja">大友</span></a>
+    <nav>
+      <a href="#calendar">営業日カレンダー</a>
+      <a href="#info">営業案内・料金</a>
+      <a href="#greeting">ごあいさつ</a>
+      <a href="#access">アクセス</a>
+    </nav>
+  </header>
+
+  <div class="hero" id="top">
+    <img src="img/exterior.jpg" alt="Hair's Room 大友の外観。レンガ調の建物とサインポール">
+    <div class="today" id="today" aria-live="polite">
+      <div class="date" id="today-date"></div>
+      <div class="status"><span class="dot"></span><span id="today-status"></span></div>
+      <div class="hours" id="today-hours"></div>
+    </div>
+  </div>
+
+  <section id="calendar">
+    <h2>営業日カレンダー</h2>
+    <p class="sub">Calendar</p>
+    <div class="cal-box">
+      <div class="cal-head">
+        <button type="button" id="prev" aria-label="前の月">‹ 前月</button>
+        <h3 id="cal-title"></h3>
+        <button type="button" id="next" aria-label="次の月">翌月 ›</button>
+      </div>
+      <table class="cal" aria-describedby="cal-rule">
+        <thead><tr><th class="sun">日</th><th>月</th><th>火</th><th>水</th><th>木</th><th>金</th><th class="sat">土</th></tr></thead>
+        <tbody id="cal-body"></tbody>
+      </table>
+      <div class="legend">
+        <span><i style="background:var(--red)"></i>休業日</span>
+        <span><i style="outline:2px solid var(--ink);outline-offset:-2px"></i>今日</span>
+      </div>
+      <p class="rule" id="cal-rule">定休日：<strong>毎週月曜日・第3日曜日</strong>（臨時休業はカレンダーでお知らせします）</p>
+    </div>
+  </section>
+
+  <section id="info">
+    <h2>営業案内・料金</h2>
+    <p class="sub">Information &amp; Price</p>
+    <div class="info">
+      <div class="panel">
+        <h3>営業時間</h3>
+        <dl class="rows">
+          <dt>平日</dt><dd>9:00〜19:00</dd>
+          <dt>土日祝</dt><dd>8:30〜18:00</dd>
+          <dt>定休日</dt><dd>毎週月曜日・第3日曜日</dd>
+          <dt>予約</dt><dd>お電話でどうぞ（予約なしでも歓迎です）</dd>
+        </dl>
+      </div>
+      <div class="panel">
+        <h3>料金（税込）</h3>
+        <ul class="menu">
+          <li><span class="name">調髪<span class="note">カット・シャンプー・顔そり</span></span><span class="fill"></span><span class="price">¥3,800</span></li>
+          <li><span class="name">カットのみ</span><span class="fill"></span><span class="price">¥2,800</span></li>
+          <li><span class="name">顔そり</span><span class="fill"></span><span class="price">¥1,500</span></li>
+          <li><span class="name">小学生以下</span><span class="fill"></span><span class="price">¥2,200</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="greeting">
+    <h2>ごあいさつ</h2>
+    <p class="sub">Greeting</p>
+    <div class="greet">
+      <img src="img/chair.jpg" alt="店内の理容椅子とシャンプー台">
+      <div>
+        <p>いつもご来店いただき、ありがとうございます。</p>
+        <p>Hair's Room 大友は、平沼ノ内で地域の皆さまに通っていただいている理容室です。<br>
+        いつもの髪型をきちんと、さっぱりと。お一人おひとりの好みを覚えて、毎回同じ仕上がりをお約束します。</p>
+        <p>待ち時間には漫画や雑誌もたくさんご用意しています。どうぞ気軽にお立ち寄りください。</p>
+        <p class="sign">店主</p>
+      </div>
+    </div>
+    <div class="photo-wide"><img src="img/interior.jpg" alt="店内。理容椅子が2台並ぶ"></div>
+  </section>
+
+  <section id="access">
+    <h2>アクセス</h2>
+    <p class="sub">Access</p>
+    <div class="panel">
+      <dl class="rows">
+        <dt>店名</dt><dd>Hair's Room 大友（ヘアーズルーム大友）</dd>
+        <dt>住所</dt><dd>〒970-0222<br>福島県いわき市平沼ノ内諏訪原2丁目15-2</dd>
+        <dt>電話</dt><dd><a href="tel:0246393201">0246-39-3201</a></dd>
+        <dt>駐車場</dt><dd>店舗前にあり</dd>
+      </dl>
+      <a class="btn" href="https://www.google.com/maps/search/?api=1&amp;query=%E3%83%98%E3%82%A2%E3%83%BC%E3%82%BA%E3%83%AB%E3%83%BC%E3%83%A0%E5%A4%A7%E5%8F%8B+%E3%81%84%E3%82%8F%E3%81%8D%E5%B8%82">Googleマップで開く</a>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <div class="pole" aria-hidden="true" style="margin-bottom:20px"></div>
+  © Hair's Room 大友
+</footer>
+
+<script>
+/* ===== 定休日の設定（更新するのはここだけ） ===== */
+// 毎週の定休日（0=日 1=月 2=火 3=水 4=木 5=金 6=土）
+const WEEKLY_CLOSED = [1];
+// 第◯◯曜日の定休日 例：{ nth: 3, weekday: 0 } = 第3日曜日
+const NTH_CLOSED = [{ nth: 3, weekday: 0 }];
+// 臨時休業日（追加するときは "年-月-日" を1行足す）
+const EXTRA_CLOSED = {
+  "2026-12-31": "年末",
+  "2027-01-01": "正月",
+  "2027-01-02": "正月",
+  "2027-01-03": "正月"
+};
+// 定休日だけど臨時で営業する日
+const EXTRA_OPEN = [];
+// 営業時間（曜日ごと）
+const HOURS = { weekday: "9:00〜19:00", weekend: "8:30〜18:00" };
+/* ============================================ */
+
+const pad = n => String(n).padStart(2, "0");
+const key = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+
+function closedReason(d) {
+  const k = key(d);
+  if (EXTRA_OPEN.includes(k)) return null;
+  if (EXTRA_CLOSED[k]) return EXTRA_CLOSED[k];
+  if (WEEKLY_CLOSED.includes(d.getDay())) return "定休日";
+  const nth = Math.ceil(d.getDate() / 7);
+  if (NTH_CLOSED.some(r => r.nth === nth && r.weekday === d.getDay())) return "定休日";
+  return null;
+}
+
+const now = new Date();
+const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+const WD = ["日", "月", "火", "水", "木", "金", "土"];
+
+// 今日の営業状況
+(function () {
+  const r = closedReason(today);
+  document.getElementById("today-date").textContent =
+    `${today.getMonth() + 1}月${today.getDate()}日（${WD[today.getDay()]}）`;
+  const box = document.getElementById("today");
+  if (r) {
+    box.classList.add("closed");
+    document.getElementById("today-status").textContent = `本日はお休みです（${r}）`;
+    // 次の営業日
+    const n = new Date(today);
+    for (let i = 0; i < 31; i++) { n.setDate(n.getDate() + 1); if (!closedReason(n)) break; }
+    document.getElementById("today-hours").textContent =
+      `次の営業日は ${n.getMonth() + 1}月${n.getDate()}日（${WD[n.getDay()]}）です`;
+  } else {
+    document.getElementById("today-status").textContent = "本日は営業しています";
+    const wk = today.getDay() === 0 || today.getDay() === 6;
+    document.getElementById("today-hours").textContent = `営業時間 ${wk ? HOURS.weekend : HOURS.weekday}`;
+  }
+})();
+
+// カレンダー（今月から2か月先まで表示）
+let view = new Date(today.getFullYear(), today.getMonth(), 1);
+const minView = new Date(view);
+const maxView = new Date(today.getFullYear(), today.getMonth() + 2, 1);
+
+function render() {
+  const y = view.getFullYear(), m = view.getMonth();
+  document.getElementById("cal-title").textContent = `${y}年 ${m + 1}月`;
+  const body = document.getElementById("cal-body");
+  body.innerHTML = "";
+  const first = new Date(y, m, 1).getDay();
+  const days = new Date(y, m + 1, 0).getDate();
+  let row = document.createElement("tr");
+  for (let i = 0; i < first; i++) row.appendChild(document.createElement("td"));
+  for (let d = 1; d <= days; d++) {
+    const date = new Date(y, m, d);
+    const td = document.createElement("td");
+    const r = closedReason(date);
+    const span = document.createElement("span");
+    span.textContent = d;
+    if (r) {
+      td.classList.add("off");
+      const s = document.createElement("small"); s.textContent = r === "定休日" ? "休" : r;
+      span.appendChild(s);
+      span.setAttribute("aria-label", `${m + 1}月${d}日 休業（${r}）`);
+    }
+    if (date < today) td.classList.add("past");
+    if (date.getTime() === today.getTime()) td.classList.add("today");
+    td.appendChild(span);
+    row.appendChild(td);
+    if (date.getDay() === 6) { body.appendChild(row); row = document.createElement("tr"); }
+  }
+  if (row.children.length) body.appendChild(row);
+  document.getElementById("prev").disabled = view <= minView;
+  document.getElementById("next").disabled = view >= maxView;
+}
+document.getElementById("prev").onclick = () => { view = new Date(view.getFullYear(), view.getMonth() - 1, 1); render(); };
+document.getElementById("next").onclick = () => { view = new Date(view.getFullYear(), view.getMonth() + 1, 1); render(); };
+render();
+</script>
+</body>
+</html>
