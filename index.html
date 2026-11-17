@@ -46,12 +46,11 @@ header nav a:hover{color:var(--ink)}
 
 .hero{position:relative;border-radius:6px;overflow:hidden}
 .hero img{width:100%;aspect-ratio:16/8;object-fit:cover}
-.today{position:absolute;left:16px;bottom:16px;right:16px;max-width:420px;background:rgba(255,255,255,.95);border-radius:6px;padding:14px 18px;box-shadow:0 4px 18px rgba(0,0,0,.15)}
-.today .date{font-size:13px;color:var(--muted)}
-.today .status{font-size:22px;font-weight:700;display:flex;align-items:center;gap:10px}
-.today .status .dot{width:12px;height:12px;border-radius:50%;background:var(--blue);flex:none}
-.today.closed .status .dot{background:var(--red)}
-.today .hours{font-size:14px}
+.now-box{position:absolute;left:16px;bottom:16px;right:16px;max-width:420px;background:rgba(255,255,255,.95);border-radius:6px;padding:14px 18px;box-shadow:0 4px 18px rgba(0,0,0,.15)}
+.now-box .status{font-size:22px;font-weight:700;display:flex;align-items:center;gap:10px}
+.now-box .status .dot{width:12px;height:12px;border-radius:50%;background:var(--blue);flex:none}
+.now-box.closed .status .dot{background:var(--red)}
+.now-box .hours{font-size:14px}
 
 section{padding:56px 0 8px}
 h2{font-family:var(--display-ja);font-size:26px;margin:0 0 4px;text-wrap:balance}
@@ -72,7 +71,7 @@ table.cal td span{display:flex;flex-direction:column;align-items:center;justify-
 table.cal td.off span{background:var(--red);color:#fff;font-weight:700}
 table.cal td.off span small{font-size:10px;font-weight:500}
 table.cal td.past span{opacity:.35}
-table.cal td.today span{outline:2px solid var(--ink);outline-offset:-2px}
+table.cal td.is-today span{outline:2px solid var(--ink);outline-offset:-2px}
 .legend{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin-top:12px}
 .legend i{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:-2px;margin-right:6px}
 .rule{margin-top:14px;font-size:15px}
@@ -107,18 +106,24 @@ ul.menu .note{display:block;font-size:12px;color:var(--muted)}
 footer{margin-top:64px;padding:24px 0 32px;font-size:13px;color:var(--muted);text-align:center}
 
 @media (max-width:640px){
+  header.site{padding:12px 0}
+  header nav{flex-wrap:nowrap;overflow-x:auto;width:100%;gap:16px;padding-bottom:4px;white-space:nowrap}
+  section{padding:40px 0 4px}
+  h2{font-size:22px}
+  .now-box .status{font-size:19px}
+  .cal-box,.panel{padding:16px}
   .info,.greet{grid-template-columns:1fr}
   .greet img{max-width:260px}
   .hero img{aspect-ratio:4/3}
-  .today{position:static;max-width:none;border-radius:0;box-shadow:none;border:1px solid var(--line);border-top:0}
-  table.cal td span{height:44px;font-size:15px}
+  .now-box{position:static;max-width:none;border-radius:0;box-shadow:none;border:1px solid var(--line);border-top:0}
+  table.cal td span{height:42px;font-size:15px}
+  table.cal td{padding:2px}
   .logo .en{font-size:22px} .logo .ja{font-size:24px}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
-<div class="pole" aria-hidden="true"></div>
 <div class="draft">試作版です。営業時間・定休日・料金は仮の内容です。</div>
 
 <div class="wrap">
@@ -134,8 +139,7 @@ footer{margin-top:64px;padding:24px 0 32px;font-size:13px;color:var(--muted);tex
 
   <div class="hero" id="top">
     <img src="img/exterior.jpg" alt="Hair's Room 大友の外観。レンガ調の建物とサインポール">
-    <div class="today" id="today" aria-live="polite">
-      <div class="date" id="today-date"></div>
+    <div class="now-box" id="today" aria-live="polite">
       <div class="status"><span class="dot"></span><span id="today-status"></span></div>
       <div class="hours" id="today-hours"></div>
     </div>
@@ -262,8 +266,6 @@ const WD = ["日", "月", "火", "水", "木", "金", "土"];
 // 今日の営業状況
 (function () {
   const r = closedReason(today);
-  document.getElementById("today-date").textContent =
-    `${today.getMonth() + 1}月${today.getDate()}日（${WD[today.getDay()]}）`;
   const box = document.getElementById("today");
   if (r) {
     box.classList.add("closed");
@@ -307,7 +309,7 @@ function render() {
       span.setAttribute("aria-label", `${m + 1}月${d}日 休業（${r}）`);
     }
     if (date < today) td.classList.add("past");
-    if (date.getTime() === today.getTime()) td.classList.add("today");
+    if (date.getTime() === today.getTime()) td.classList.add("is-today");
     td.appendChild(span);
     row.appendChild(td);
     if (date.getDay() === 6) { body.appendChild(row); row = document.createElement("tr"); }
